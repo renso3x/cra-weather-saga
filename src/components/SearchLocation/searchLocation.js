@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { getCities } from '../../actions/locationAction';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { getCities, saveLocation } from '../../actions/locationAction';
+
 import {
   Form,
   FormGroup,
@@ -32,12 +35,9 @@ class SearchLocation extends Component {
     });
   };
 
-  fetchWeather = locationID => {
-    console.log('LOCATION ID: ', locationID);
-  };
-
   render() {
     const { cities, loading } = this.state;
+    const { saveLocation } = this.props;
 
     return (
       <Form>
@@ -59,8 +59,9 @@ class SearchLocation extends Component {
               <ListGroup>
                 {cities.map((item, index) => (
                   <ListGroupItem
+                    key={index}
                     action
-                    onClick={() => this.fetchWeather(item.woeid)}
+                    onClick={() => saveLocation(item.title, item.woeid)}
                   >
                     {item.title}
                   </ListGroupItem>
@@ -74,4 +75,22 @@ class SearchLocation extends Component {
   }
 }
 
-export default SearchLocation;
+function mapStateToProps({ location }) {
+  return {
+    location
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      saveLocation
+    },
+    dispatch
+  );
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchLocation);

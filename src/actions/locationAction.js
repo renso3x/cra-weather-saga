@@ -1,5 +1,6 @@
-import * as types from '../constants/actionTypes';
+import { SAVE_LOCATION, RESET_LOCATION } from '../constants/actionTypes';
 import { searchCity } from '../api/location';
+import { getWeather } from '../api/weather';
 
 /**
  * Saves location to redux
@@ -7,22 +8,30 @@ import { searchCity } from '../api/location';
  * @param {object} location
  * String to save as location
  */
-export const saveLocation = location => dispatch => {
-  console.log('LOCATION: ', location);
+export const saveLocation = (city, id) => {
+  return dispatch => {
+    return getWeather(id).then(response => {
+      dispatch({
+        type: SAVE_LOCATION,
+        payload: {
+          city,
+          id,
+          weatherConditions: response.data.consolidated_weather
+        }
+      });
+    });
+  };
+};
 
-  // searchLocation(location).then(response => {
-  //   console.log('RESPONSE ====', response);
-  //   // type: types.SAVE_LOCATION,
-  //   // payload: location
-  // });
-
-  // return dispatch => {
-  //   return searchLocation(location).then(response => {
-  //     console.log('RESPONSE ====', response);
-  //     // type: types.SAVE_LOCATION,
-  //     // payload: location
-  //   });
-  // };
+/**
+ * Reset location
+ */
+export const resetLocation = () => {
+  return dispatch => {
+    dispatch({
+      type: RESET_LOCATION
+    });
+  };
 };
 
 /**

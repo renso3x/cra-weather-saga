@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { resetLocation } from './actions/locationAction';
 
 import { Container, Col } from 'reactstrap';
+
 import SearchLocation from './components/SearchLocation/searchLocation';
 import ShowWeather from './components/ShowWeather/showWeather';
 
@@ -10,44 +12,51 @@ import './App.css';
 
 import { Wrapper, Card, Button } from './style';
 
-import { saveLocation } from './actions/locationAction';
-
 class App extends Component {
   render() {
+    const { location, resetLocation } = this.props;
+
     return (
       <Wrapper>
         <Container>
-          <Col md={{ size: 6, offset: 3 }}>
-            <Card>
-              <SearchLocation />
-            </Card>
-          </Col>
+          {!location.city ? (
+            <Col md={{ size: 6, offset: 3 }}>
+              <Card>
+                <SearchLocation />
+              </Card>
+            </Col>
+          ) : (
+            <Col md={{ size: 10, offset: 1 }}>
+              <Card>
+                <ShowWeather
+                  city={location.city}
+                  weatherConditions={location.weatherConditions}
+                />
+              </Card>
 
-          {/* <Col md={{ size: 10, offset: 1 }}>
-            <Card>
-              <ShowWeather />
-            </Card>
-
-            <div style={{ textAlign: 'center', marginTop: '20px' }}>
-              <Button>Search City Weather again</Button>
-            </div>
-          </Col> */}
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button onClick={() => resetLocation()}>
+                  Search City Weather again
+                </Button>
+              </div>
+            </Col>
+          )}
         </Container>
       </Wrapper>
     );
   }
 }
 
-function mapStateToProps({ state }) {
+function mapStateToProps({ location }) {
   return {
-    state
+    location
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      saveLocation
+      resetLocation
     },
     dispatch
   );
