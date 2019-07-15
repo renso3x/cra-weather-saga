@@ -3,7 +3,7 @@ import axios from 'axios';
 /**
  * Fetch the list of location that contains the given text
  *
- * @param {string} location
+ * @param {string} city
  *
  * @returns {Promise}
  */
