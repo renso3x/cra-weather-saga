@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getCities, saveLocation } from '../../actions/locationAction';
-
+import { fetchWeather } from '../../actions/weatherAction';
 import {
   Form,
   FormGroup,
@@ -22,23 +22,25 @@ class SearchLocation extends Component {
     };
   }
 
+  componentWillReceiveProps({ location }) {
+    this.setState({ loading: false, cities: location.cities });
+  }
+
   fetchLocation = location => {
     this.setState({
       loading: true
     });
 
-    getCities(location).then(res => {
-      this.setState({
-        cities: res,
-        loading: false
-      });
-    });
+    this.props.onSearchCity(location);
+  };
+
+  handleFetchWeather = (city, woeid) => {
+    this.props.fetchWeather(city, woeid);
   };
 
   render() {
     const { cities, loading } = this.state;
     const { saveLocation } = this.props;
-
     return (
       <Form>
         <FormGroup>
@@ -57,15 +59,20 @@ class SearchLocation extends Component {
           cities.length > 0 && (
             <FormGroup>
               <ListGroup>
-                {cities.map((item, index) => (
-                  <ListGroupItem
-                    key={index}
-                    action
-                    onClick={() => saveLocation(item.title, item.woeid)}
-                  >
-                    {item.title}
-                  </ListGroupItem>
-                ))}
+                {cities.map((item, index) => {
+                  console.log(item);
+                  return (
+                    <ListGroupItem
+                      key={index}
+                      action
+                      onClick={() =>
+                        this.handleFetchWeather(item.title, item.woeid)
+                      }
+                    >
+                      {item.title}
+                    </ListGroupItem>
+                  );
+                })}
               </ListGroup>
             </FormGroup>
           )
@@ -84,7 +91,8 @@ function mapStateToProps({ location }) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      saveLocation
+      saveLocation,
+      fetchWeather
     },
     dispatch
   );

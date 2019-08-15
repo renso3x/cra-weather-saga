@@ -27,10 +27,8 @@ export const saveLocation = (city, id) => {
  * Reset location
  */
 export const resetLocation = () => {
-  return dispatch => {
-    dispatch({
-      type: RESET_LOCATION
-    });
+  return {
+    type: 'RESET_LOCATION_START'
   };
 };
 
@@ -41,11 +39,8 @@ export const resetLocation = () => {
  * String to search for
  */
 export const getCities = city => {
-  return searchCity(city)
-    .then(response => {
-      return response.data;
-    })
-    .catch(() => {
-      return [];
-    });
+  return {
+    type: 'SEARCH_LOCATION',
+    payload: city
+  };
 };

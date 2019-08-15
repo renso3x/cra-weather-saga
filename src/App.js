@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { resetLocation } from './actions/locationAction';
+import { resetLocation, getCities } from './actions/locationAction';
 
 import { Container, Col } from 'reactstrap';
 
@@ -13,16 +13,22 @@ import './App.css';
 import { Wrapper, Card, Button } from './style';
 
 class App extends Component {
-  render() {
-    const { location, resetLocation } = this.props;
+  handleSearchCity = city => {
+    this.props.getCities(city);
+  };
+  handleResetLocation = () => {
+    this.props.resetLocation();
+  };
 
+  render() {
+    const { location } = this.props;
     return (
       <Wrapper>
         <Container>
           {!location.city ? (
             <Col md={{ size: 6, offset: 3 }}>
               <Card>
-                <SearchLocation />
+                <SearchLocation onSearchCity={this.handleSearchCity} />
               </Card>
             </Col>
           ) : (
@@ -35,7 +41,7 @@ class App extends Component {
               </Card>
 
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                <Button onClick={() => resetLocation()}>
+                <Button onClick={this.handleResetLocation}>
                   Search City Weather again
                 </Button>
               </div>
@@ -56,7 +62,8 @@ function mapStateToProps({ location }) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      resetLocation
+      resetLocation,
+      getCities
     },
     dispatch
   );
